@@ -118,7 +118,7 @@ export default function PublicStudentPage() {
         <p className="text-sm text-gray-600">Please enter your full name before starting the activity:</p>
         <input
           type="text"
-          placeholder="e.g. Jane Doe"
+          placeholder="e.g. David Bukasa"
           value={studentName}
           onChange={(e) => setStudentName(e.target.value)}
           className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
