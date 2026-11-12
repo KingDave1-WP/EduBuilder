@@ -4,13 +4,18 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { CheckCircle2, Clock, Users, Award, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, Clock, Users, Award, ArrowLeft, Trash2 } from 'lucide-react';
 
 export default function TeacherSubmissionsPage() {
   const router = useRouter();
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Delete flow
+  const [pendingDelete, setPendingDelete] = useState<any | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchSubmissions() {
@@ -52,6 +57,41 @@ export default function TeacherSubmissionsPage() {
 
     setError(null);
     setSubmissions((prev) => prev.map((sub) => (sub.id === id ? { ...sub, status: 'reviewed' } : sub)));
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    setDeleteError(null);
+
+    // .select() returns the deleted rows, so we can tell when a policy silently blocked the delete
+    const { data, error } = await supabase
+      .from('submissions')
+      .delete()
+      .eq('id', pendingDelete.id)
+      .select();
+
+    if (error) {
+      setDeleteError(`Could not delete: ${error.message}`);
+      setDeleting(false);
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      setDeleteError('Nothing was deleted. Check that your Supabase delete policy allows this.');
+      setDeleting(false);
+      return;
+    }
+
+    setSubmissions((prev) => prev.filter((s) => s.id !== pendingDelete.id));
+    setPendingDelete(null);
+    setDeleting(false);
+  };
+
+  const closeModal = () => {
+    if (deleting) return;
+    setPendingDelete(null);
+    setDeleteError(null);
   };
 
   // Group submissions by activity title
@@ -150,22 +190,87 @@ export default function TeacherSubmissionsPage() {
                         </span>
                       </div>
 
-                      {sub.status !== 'reviewed' ? (
+                      <div className="flex items-center gap-2">
+                        {sub.status !== 'reviewed' ? (
+                          <button
+                            onClick={() => markAsReviewed(sub.id)}
+                            className="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-semibold hover:bg-gray-800 transition-colors flex items-center gap-1.5"
+                          >
+                            <CheckCircle2 className="w-4 h-4" /> Mark Reviewed
+                          </button>
+                        ) : (
+                          <span className="text-xs text-green-600 font-medium px-3 py-2">Reviewed</span>
+                        )}
+
                         <button
-                          onClick={() => markAsReviewed(sub.id)}
-                          className="px-4 py-2 bg-gray-900 text-white rounded-xl text-xs font-semibold hover:bg-gray-800 transition-colors flex items-center gap-1.5"
+                          type="button"
+                          onClick={() => {
+                            setDeleteError(null);
+                            setPendingDelete(sub);
+                          }}
+                          aria-label={`Delete submission from ${sub.student_name}`}
+                          title="Delete submission"
+                          className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors"
                         >
-                          <CheckCircle2 className="w-4 h-4" /> Mark Reviewed
+                          <Trash2 className="w-4 h-4" />
                         </button>
-                      ) : (
-                        <span className="text-xs text-green-600 font-medium px-3 py-2">Reviewed</span>
-                      )}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Delete confirmation modal */}
+      {pendingDelete && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-4"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Delete this submission?</h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  <span className="font-semibold">{pendingDelete.student_name}</span>&apos;s result (
+                  {pendingDelete.score} / {pendingDelete.max_score}) will be permanently deleted. This
+                  can&apos;t be undone.
+                </p>
+              </div>
+            </div>
+
+            {deleteError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-3 py-2 text-sm">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                onClick={closeModal}
+                disabled={deleting}
+                className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700 font-semibold text-sm hover:bg-gray-50 disabled:opacity-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={deleting}
+                className="px-4 py-2 rounded-xl bg-red-600 text-white font-semibold text-sm hover:bg-red-700 disabled:opacity-60 transition-colors"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

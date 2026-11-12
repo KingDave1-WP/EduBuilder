@@ -26,6 +26,7 @@ export default function DashboardPage() {
       const isFakeMode = process.env.NEXT_PUBLIC_FAKE_MODE === 'true';
 
       // Only signed-in teachers can see the dashboard
+      let userId: string | null = null;
       if (!isFakeMode) {
         const {
           data: { session },
@@ -34,13 +35,23 @@ export default function DashboardPage() {
           router.replace('/login');
           return;
         }
+        userId = session.user.id;
       }
 
       setLoading(true);
       setError(null);
 
+      // Each teacher only sees the activities they created
+      let activitiesQuery = supabase
+        .from('activities')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (userId) {
+        activitiesQuery = activitiesQuery.eq('user_id', userId);
+      }
+
       const [actRes, totalRes, pendingRes] = await Promise.all([
-        supabase.from('activities').select('*').order('created_at', { ascending: false }),
+        activitiesQuery,
         supabase.from('submissions').select('*', { count: 'exact', head: true }),
         supabase
           .from('submissions')
@@ -207,7 +218,7 @@ export default function DashboardPage() {
                   }}
                   aria-label={`Delete ${act.title ?? 'activity'}`}
                   title="Delete activity"
-                  className="absolute top-3 right-3 p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                  className="absolute top-3 right-3 z-10 p-2 rounded-lg bg-white/90 border border-gray-200 text-gray-500 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
