@@ -109,7 +109,7 @@ export default function TeacherSubmissionsPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8">
+    <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6 sm:space-y-8">
       <div className="space-y-3">
         <Link
           href="/dashboard"
@@ -118,7 +118,7 @@ export default function TeacherSubmissionsPage() {
           <ArrowLeft className="w-4 h-4" /> Back to Dashboard
         </Link>
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900">Student Submissions & Marking</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Student Submissions & Marking</h1>
           <p className="text-gray-500 mt-1">
             Review student results, check scores, and mark submissions as reviewed.
           </p>
@@ -144,7 +144,7 @@ export default function TeacherSubmissionsPage() {
         <div className="space-y-6">
           {Object.entries(groupedSubmissions).map(([activityTitle, subs]) => (
             <div key={activityTitle} className="bg-white border rounded-2xl shadow-sm overflow-hidden">
-              <div className="bg-orange-50/60 px-6 py-4 border-b flex justify-between items-center">
+              <div className="bg-orange-50/60 px-4 sm:px-6 py-4 border-b flex justify-between items-center gap-3">
                 <div>
                   <h2 className="font-bold text-lg text-gray-900">{activityTitle}</h2>
                   <p className="text-xs text-orange-800 font-medium mt-0.5">
@@ -174,7 +174,7 @@ export default function TeacherSubmissionsPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
                       <div className="text-right">
                         <div className="flex items-center gap-1 text-sm font-extrabold text-orange-600">
                           <Award className="w-4 h-4" /> {sub.score} / {sub.max_score}

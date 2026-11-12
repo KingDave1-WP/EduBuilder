@@ -103,7 +103,7 @@ export default function PublicStudentPage() {
 
   if (!activity) {
     return (
-      <div className="max-w-md mx-auto my-20 p-6 text-center bg-white rounded-xl shadow-sm border">
+      <div className="max-w-md mx-4 sm:mx-auto my-10 sm:my-20 p-6 text-center bg-white rounded-xl shadow-sm border">
         <h2 className="text-xl font-bold text-gray-800">Activity Not Found</h2>
         <p className="text-sm text-gray-500 mt-2">Check the link or ask your teacher for an updated link.</p>
       </div>
@@ -113,12 +113,12 @@ export default function PublicStudentPage() {
   // 1. Ask for student name before starting
   if (!started) {
     return (
-      <div className="max-w-md mx-auto mt-20 p-6 bg-white border rounded-xl shadow-sm space-y-4 text-center">
+      <div className="max-w-md mx-4 sm:mx-auto mt-10 sm:mt-20 p-6 bg-white border rounded-xl shadow-sm space-y-4 text-center">
         <h1 className="text-xl font-bold text-gray-900">{activity.title}</h1>
         <p className="text-sm text-gray-600">Please enter your full name before starting the activity:</p>
         <input
           type="text"
-          placeholder="e.g. Alex Solvica "
+          placeholder="e.g. Jane Doe"
           value={studentName}
           onChange={(e) => setStudentName(e.target.value)}
           className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
@@ -139,7 +139,7 @@ export default function PublicStudentPage() {
     const feedback = getFeedback(finalScore.score, finalScore.max);
 
     return (
-      <div className="max-w-md mx-auto mt-20 p-8 bg-white border-2 border-orange-500 rounded-xl shadow-sm text-center space-y-4">
+      <div className="max-w-md mx-4 sm:mx-auto mt-10 sm:mt-20 p-6 sm:p-8 bg-white border-2 border-orange-500 rounded-xl shadow-sm text-center space-y-4">
         <h2 className="text-2xl font-bold text-gray-900">{feedback.title}</h2>
         <p className="text-gray-600">
           {feedback.message}, <strong className="text-gray-900">{studentName}</strong>!
@@ -177,7 +177,7 @@ export default function PublicStudentPage() {
   // 3. Render the respective activity template with submission callback
   return (
     <div className="py-6 px-2 min-h-screen bg-orange-50/40">
-      <div className="max-w-2xl mx-auto mb-4 bg-white p-3 rounded-lg border flex justify-between items-center text-sm text-gray-600 shadow-sm">
+      <div className="max-w-2xl mx-auto mb-4 bg-white p-3 rounded-lg border flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 text-sm text-gray-600 shadow-sm">
         <span>
           Student: <strong className="text-gray-900">{studentName}</strong>
         </span>

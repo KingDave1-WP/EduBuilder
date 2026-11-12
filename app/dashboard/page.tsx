@@ -115,18 +115,18 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 py-6 sm:py-8 space-y-6">
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900">Teacher Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Teacher Dashboard</h1>
           <p className="text-gray-600 mt-1">Manage interactive materials and view student results.</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto">
           <Link
             href="/dashboard/submissions"
-            className="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 shadow-sm flex items-center gap-2 transition-colors"
+            className="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 shadow-sm flex items-center justify-center gap-2 transition-colors"
           >
             <ClipboardList className="w-5 h-5 text-gray-600" />
             <span>Student Submissions</span>
@@ -139,7 +139,7 @@ export default function DashboardPage() {
 
           <Link
             href="/create"
-            className="px-5 py-2.5 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 shadow-sm flex items-center gap-2 transition-colors"
+            className="px-5 py-2.5 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 shadow-sm flex items-center justify-center gap-2 transition-colors"
           >
             <Plus className="w-5 h-5" />
             <span>Create Activity</span>

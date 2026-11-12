@@ -2,8 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #fffaf5;
-  color: #1c1917;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+@layer base {
+  html {
+    /* Stop iOS from resizing text when the phone is rotated */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: #fffaf5;
+    color: #1c1917;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh; 
+    overflow-x: clip;
+    overflow-wrap: break-word;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+  }
+
+  /* Tapping a button shouldn't trigger double-tap zoom */
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  /* iOS Safari zooms into any input smaller than 16px, which breaks the layout */
+  @media (max-width: 640px) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
 }
